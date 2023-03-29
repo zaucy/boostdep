@@ -6,11 +6,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 // See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt
-
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <filesystem>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -24,7 +20,7 @@
 #include <sstream>
 #include <cctype>
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 enum output_format
 {
@@ -65,7 +61,7 @@ static void scan_module_headers( fs::path const & path )
 
         for( ; it != last; ++it )
         {
-            if( it->status().type() == fs::directory_file )
+            if( it->status().type() == fs::file_type::directory )
             {
                 continue;
             }
@@ -91,7 +87,7 @@ static void scan_submodules( fs::path const & path )
     {
         fs::directory_entry const & e = *it;
 
-        if( e.status().type() != fs::directory_file )
+        if( e.status().type() != fs::file_type::directory )
         {
             continue;
         }
@@ -233,7 +229,7 @@ static void scan_module_path( fs::path const & dir, bool remove_prefix, std::map
 
         for( ; it != last; ++it )
         {
-            if( it->status().type() == fs::directory_file )
+            if( it->status().type() == fs::file_type::directory )
             {
                 continue;
             }
@@ -245,7 +241,7 @@ static void scan_module_path( fs::path const & dir, bool remove_prefix, std::map
                 header = header.substr( n+1 );
             }
 
-            fs::ifstream is( it->path() );
+            std::ifstream is( it->path() );
 
             scan_header_dependencies( header, is, deps, from );
         }
@@ -2178,7 +2174,7 @@ static void add_module_headers( fs::path const & dir, std::set<std::string> & he
 
         for( ; it != last; ++it )
         {
-            if( it->status().type() == fs::directory_file )
+            if( it->status().type() == fs::file_type::directory )
             {
                 continue;
             }
@@ -2655,7 +2651,7 @@ static int module_cxxstd_requirement( std::string const& module )
 
     int r = 0;
 
-    fs::ifstream is( lj );
+    std::ifstream is( lj );
 
     std::string line;
 
@@ -2696,7 +2692,7 @@ static void output_module_cmake_report( std::string module )
 
         for( ; it != last; ++it )
         {
-            if( it->status().type() != fs::regular_file ) continue;
+            if( it->status().type() != fs::file_type::regular ) continue;
 
             fs::path p = it->path();
             std::string ext = p.extension().string();
