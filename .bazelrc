@@ -1,0 +1,4 @@
+common --enable_bzlmod
+build --experimental_strict_action_env
+build --incompatible_enable_cc_toolchain_resolution
+
